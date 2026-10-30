@@ -1,0 +1,36 @@
+{
+  "name": "be-language",
+  "displayName": "BE Language",
+  "description": "Syntax colors for BE, the Banglish programming language",
+  "version": "3.0.0",
+  "publisher": "jonayed-hossain",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "be",
+        "aliases": [
+          "BE",
+          "be"
+        ],
+        "extensions": [
+          ".be"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "be",
+        "scopeName": "source.be",
+        "path": "./syntaxes/be.tmLanguage.json"
+      }
+    ]
+  }
+}

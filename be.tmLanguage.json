@@ -1,0 +1,148 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "BE",
+  "scopeName": "source.be",
+  "comment": "Made by tools/sync.py from be/keywords.py. Do not edit by hand.",
+  "patterns": [
+    {
+      "include": "#code"
+    }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.line.number-sign.be",
+      "match": "#.*$"
+    },
+    "template": {
+      "name": "meta.template.expression.be",
+      "begin": "(?<!\\\\)\\{",
+      "end": "\\}",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.embedded.begin.be"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.embedded.end.be"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#code"
+        }
+      ]
+    },
+    "string-double": {
+      "name": "string.quoted.double.be",
+      "begin": "\"",
+      "end": "\"|$",
+      "patterns": [
+        {
+          "name": "constant.character.escape.be",
+          "match": "\\\\."
+        },
+        {
+          "include": "#template"
+        }
+      ]
+    },
+    "string-single": {
+      "name": "string.quoted.single.be",
+      "begin": "'",
+      "end": "'|$",
+      "patterns": [
+        {
+          "name": "constant.character.escape.be",
+          "match": "\\\\."
+        },
+        {
+          "include": "#template"
+        }
+      ]
+    },
+    "definition": {
+      "match": "\\b(kaj|shreni)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+      "captures": {
+        "1": {
+          "name": "storage.type.be"
+        },
+        "2": {
+          "name": "entity.name.function.be"
+        }
+      }
+    },
+    "number": {
+      "name": "constant.numeric.be",
+      "match": "\\b[0-9]+(\\.[0-9]+)?\\b"
+    },
+    "builtin": {
+      "name": "support.function.builtin.be",
+      "match": "\\b(choto_hater|boro_hater|json_banao|json_porho|file_porho|file_lekho|shob_khojo|parishkar|file_ache|web_theke|borgomul|poromman|file_jog|jiggesh|shonkha|bad_dao|elomelo|website|dhoron|jogfol|shajao|bodlao|kothay|shomoy|python|ghumao|janala|lomba|lekha|jukto|choto|chabi|uttor|khojo|banao|notun|boro|ulta|bhag|jora|pore|gol|man|js)\\b(?=\\s*\\()"
+    },
+    "function-call": {
+      "name": "entity.name.function.call.be",
+      "match": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()"
+    },
+    "operator": {
+      "name": "keyword.operator.be",
+      "match": "==|!=|<=|>=|\\+=|-=|\\*=|/=|[-+*/%=<>]"
+    },
+    "keyword-control": {
+      "name": "keyword.control.be",
+      "match": "\\b(jotokkhon|porjonto|protiti|chhuro|chesta|dekhao|tahole|nahole|ghuro|ferot|thamo|theke|dhap|agao|anao|jodi|bar)\\b"
+    },
+    "keyword-declaration": {
+      "name": "storage.type.be",
+      "match": "\\b(shreni|dhoro|kaj)\\b"
+    },
+    "keyword-logic": {
+      "name": "keyword.operator.logical.be",
+      "match": "\\b(moddhe|othoba|ebong|na)\\b"
+    },
+    "constant": {
+      "name": "constant.language.be",
+      "match": "\\b(kichuna|mittha|sotti|upor|ei)\\b"
+    },
+    "code": {
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#string-double"
+        },
+        {
+          "include": "#string-single"
+        },
+        {
+          "include": "#definition"
+        },
+        {
+          "include": "#keyword-control"
+        },
+        {
+          "include": "#keyword-declaration"
+        },
+        {
+          "include": "#keyword-logic"
+        },
+        {
+          "include": "#constant"
+        },
+        {
+          "include": "#number"
+        },
+        {
+          "include": "#builtin"
+        },
+        {
+          "include": "#function-call"
+        },
+        {
+          "include": "#operator"
+        }
+      ]
+    }
+  }
+}

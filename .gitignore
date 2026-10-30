@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+
+# Virtual environment
+.venv/
+venv/
+
+# Tests
+.pytest_cache/
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+
+# Made by the examples
+examples/python/notes.txt

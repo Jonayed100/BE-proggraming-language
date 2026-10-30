@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My tasks (made with BE)</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 560px; margin: 40px auto; padding: 0 16px; color: #18231c; }
+  h1 { color: #0d6b49; }
+  input { padding: 8px; font-size: 16px; width: 60%; }
+  button { padding: 8px 14px; font-size: 16px; background: #0d6b49; color: white; border: 0; border-radius: 6px; cursor: pointer; }
+  li { padding: 6px 0; cursor: pointer; }
+  li.done { text-decoration: line-through; color: #7a877e; }
+</style>
+</head>
+<body>
+  <h1>My tasks</h1>
+  <input id="task" placeholder="New task">
+  <button id="add">Add</button>
+  <ul id="list"></ul>
+  <p id="count"></p>
+  <p><small>Click a task to mark it done. This page's logic is written in BE.</small></p>
+
+  <!-- 1. Load BE for web pages -->
+  <script src="../../playground/be-web.js"></script>
+
+  <!-- 2. Write BE code inside script type="text/be" -->
+  <script type="text/be">
+    # Every word here is Banglish: khojo = find, banao = make, bodlao = change,
+    # chap = click, jog = add, muchho = clear, chinho = mark, man = what's in it
+    dhoro korniyo = []                 # the list of things to do
+    dhoro ghor = khojo("#task")
+    dhoro talika = khojo("#list")
+
+    kaj talika_dekhao() {
+        talika.muchho()
+        protiti kaj_ti korniyo theke {
+            dhoro sari = banao("li").bodlao(kaj_ti.nam).chinho("done", kaj_ti.hoyeche)
+            sari.chap(kaj () {
+                kaj_ti.hoyeche = na kaj_ti.hoyeche
+                talika_dekhao()
+            })
+            talika.jog(sari)
+        }
+        dhoro baki = 0
+        protiti kaj_ti korniyo theke {
+            jodi na kaj_ti.hoyeche { baki += 1 }
+        }
+        khojo("#count").bodlao("{baki} of {lomba(korniyo)} tasks left")
+    }
+
+    kaj notun_kaj() {
+        dhoro lekha_ti = parishkar(ghor.man())
+        jodi lekha_ti != "" {
+            jukto(korniyo, {"nam": lekha_ti, "hoyeche": mittha})
+            ghor.muchho()
+            talika_dekhao()
+        }
+    }
+
+    khojo("#add").chap(kaj () { notun_kaj() })
+    ghor.chabi_chap(kaj (chabi_ti) {
+        jodi chabi_ti == "Enter" { notun_kaj() }
+    })
+    talika_dekhao()
+  </script>
+</body>
+</html>

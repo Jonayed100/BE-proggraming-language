@@ -1,0 +1,65 @@
+# Builds BE as its own program for Windows, Mac and Linux, so people can use BE
+# without installing Python. It runs on GitHub's computers:
+#   - every time you publish a release: the files are added to the release page
+#   - or when you click "Run workflow" on the Actions tab: the files are under "Artifacts"
+name: Build BE
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install the build tools
+        run: python -m pip install pyinstaller pytest
+
+      - name: Run BE's tests
+        run: python -m pytest
+
+      - name: Build BE as its own program
+        run: python tools/build_exe.py
+
+      - name: Make the Windows installer (BE-Setup.exe)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (-not (Get-Command iscc -ErrorAction SilentlyContinue)) { choco install innosetup --no-progress -y }
+          $iscc = (Get-Command iscc -ErrorAction SilentlyContinue).Source
+          if (-not $iscc) { $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" }
+          & $iscc installer\be.iss
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: be-${{ runner.os }}
+          path: |
+            dist/be-*
+            dist/BE-Setup.exe
+          if-no-files-found: error
+
+      - name: Add the files to the release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/be-*
+            dist/BE-Setup.exe

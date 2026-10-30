@@ -1,0 +1,4 @@
+body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; color: #18231c; }
+h1 { color: #0d6b49; }
+input { padding: 8px; font-size: 16px; }
+button { padding: 8px 14px; font-size: 16px; background: #0d6b49; color: white; border: 0; border-radius: 6px; }

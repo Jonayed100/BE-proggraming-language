@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "be-lang"
+version = "3.0.0"
+description = "BE: the Banglish programming language. Write code with Bangla words in English letters; build programs, websites, apps and web pages."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Jonayed Hossain" }]
+requires-python = ">=3.11"
+keywords = ["bangla", "banglish", "programming-language", "interpreter", "education"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Education",
+    "Topic :: Software Development :: Interpreters",
+    "Natural Language :: Bengali",
+]
+
+[project.scripts]
+be = "be.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/YOUR-GITHUB-USERNAME/be-lang"
+
+[tool.setuptools]
+packages = ["be"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

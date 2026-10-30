@@ -1,0 +1,1475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn BE</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@600;800&family=Hind+Siliguri:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Learn BE: the lessons on the left, a live BE workspace on the right (one at a time on phones).
+   Same colors and fonts as the Playground. Exercises are yellow (holud), done things are green. */
+:root {
+  --bg: #eef2ec;
+  --surface: #fbfcfa;
+  --surface-2: #e4eae1;
+  --ink: #18231c;
+  --muted: #56655b;
+  --line: #cfd8cb;
+  --accent: #0d6b49;
+  --accent-ink: #ffffff;
+  --holud: #b87800;
+  --holud-bg: #fbf3e1;
+  --holud-line: #e8cf98;
+  --check-bg: #8f5d00;
+  --check-ink: #ffffff;
+  --done-bg: #e2f0e8;
+  --kw: #0d6b49;
+  --str: #a5321d;
+  --num: #8a5600;
+  --com: #7a877e;
+  --fn: #3348a8;
+  --const: #9a2a77;
+  --err: #b3261e;
+  --err-bg: #fbe9e6;
+  --ok: #0d6b49;
+  --shadow: 0 10px 30px rgba(24, 35, 28, 0.18);
+  --font-display: "Baloo Da 2", "Hind Siliguri", system-ui, sans-serif;
+  --font-body: "Hind Siliguri", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-code: "JetBrains Mono", "Hind Siliguri", ui-monospace, Menlo, Consolas, monospace;
+  --radius: 10px;
+  --head-h: 58px;
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1411; --surface: #141c17; --surface-2: #1b251f; --ink: #e3ebe5; --muted: #93a398;
+    --line: #29362e; --accent: #4fc08d; --accent-ink: #08130d; --holud: #e2ad3b;
+    --holud-bg: #221c10; --holud-line: #4a3c1c; --check-bg: #e2ad3b; --check-ink: #1a1205; --done-bg: #12261c;
+    --kw: #5fd09c; --str: #f19478; --num: #e6b450; --com: #6e7d73; --fn: #93a7ff; --const: #e483c7;
+    --err: #ff8f84; --err-bg: #2a1614; --ok: #5fd09c; --shadow: 0 10px 30px rgba(0, 0, 0, 0.5); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1411; --surface: #141c17; --surface-2: #1b251f; --ink: #e3ebe5; --muted: #93a398;
+  --line: #29362e; --accent: #4fc08d; --accent-ink: #08130d; --holud: #e2ad3b;
+  --holud-bg: #221c10; --holud-line: #4a3c1c; --check-bg: #e2ad3b; --check-ink: #1a1205; --done-bg: #12261c;
+  --kw: #5fd09c; --str: #f19478; --num: #e6b450; --com: #6e7d73; --fn: #93a7ff; --const: #e483c7;
+  --err: #ff8f84; --err-bg: #2a1614; --ok: #5fd09c; --shadow: 0 10px 30px rgba(0, 0, 0, 0.5); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+}
+[hidden] { display: none !important; }
+button, select, input {
+  font: inherit;
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  padding: 7px 14px;
+  min-height: 40px;
+}
+button { cursor: pointer; }
+button:hover { border-color: var(--muted); }
+button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+.primary:hover { filter: brightness(1.08); border-color: var(--accent); }
+.check-btn { background: var(--check-bg); color: var(--check-ink); border-color: var(--check-bg); font-weight: 600; }
+.check-btn:hover { filter: brightness(1.08); border-color: var(--check-bg); }
+.ghost { background: transparent; }
+code, .code { font-family: var(--font-code); font-variant-ligatures: none; }
+
+/* ---------- top bar */
+.top {
+  position: sticky; top: 0; z-index: 40;
+  height: var(--head-h);
+  display: flex; align-items: center; gap: 14px;
+  padding: 0 var(--gutter-r) 0 var(--gutter-l);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.logo { font-family: var(--font-display); font-weight: 800; font-size: 32px; line-height: 1; color: var(--accent); text-decoration: none; letter-spacing: -0.02em; white-space: nowrap; padding-top: 4px; }
+.logo span { font-size: 16px; font-weight: 600; color: var(--muted); letter-spacing: 0.03em; margin-left: 4px; }
+.toc-btn { display: none; min-width: 0; max-width: 46vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+.progress { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--muted); white-space: nowrap; }
+.meter { width: 120px; height: 7px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 99px; transition: width 0.4s ease; }
+.top-link { color: var(--muted); font-size: 14.5px; text-decoration: none; white-space: nowrap; }
+.top-link:hover { color: var(--ink); }
+.switch { display: none; margin-left: auto; border: 1px solid var(--line); border-radius: 9px; padding: 2px; background: var(--surface-2); }
+.switch button { border: 0; min-height: 34px; padding: 4px 14px; background: transparent; font-size: 14.5px; color: var(--muted); }
+.switch button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12); }
+
+/* ---------- three columns */
+.app { display: grid; grid-template-columns: 268px minmax(0, 1fr) minmax(0, 1.04fr); height: calc(100dvh - var(--head-h)); }
+.toc { overflow: auto; background: var(--surface); border-right: 1px solid var(--line); padding: 14px 10px 24px; }
+.lesson { overflow: auto; padding: 30px clamp(18px, 3.4vw, 52px) 64px; scroll-padding-top: 16px; }
+.work { overflow: auto; background: var(--surface-2); border-left: 1px solid var(--line); padding: 14px 16px 24px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.scrim { display: none; }
+
+@media (max-width: 1199px) {
+  .app { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .toc-btn { display: block; }
+  .toc {
+    position: fixed; z-index: 50; top: var(--head-h); bottom: 0; left: 0; width: min(330px, 88vw);
+    transform: translateX(-105%); visibility: hidden; transition: transform 0.22s ease, visibility 0s linear 0.22s;
+    box-shadow: var(--shadow); padding-left: max(10px, env(safe-area-inset-left, 0px));
+  }
+  body.toc-open .toc { transform: none; visibility: visible; transition: transform 0.22s ease; }
+  body.toc-open .scrim { display: block; position: fixed; inset: var(--head-h) 0 0 0; z-index: 45; background: rgba(0, 0, 0, 0.32); }
+}
+@media (max-width: 899px) {
+  .app { display: block; height: auto; }
+  .lesson, .work { overflow: visible; }
+  .lesson { padding: 22px var(--gutter-r) 48px var(--gutter-l); }
+  .work { border-left: 0; padding: 12px var(--gutter-r) 32px var(--gutter-l); min-height: calc(100dvh - var(--head-h)); }
+  body[data-view="lesson"] .work { display: none; }
+  body[data-view="code"] .lesson { display: none; }
+  .switch { display: flex; }
+  .progress, .top-link { display: none; }
+  .toc-btn { max-width: none; flex: 0 1 auto; }
+  .logo span { display: none; }
+}
+@media (max-width: 420px) {
+  .top { gap: 8px; }
+  .switch button { padding: 4px 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .toc, body.toc-open .toc, .meter i { transition: none; } }
+
+/* ---------- lesson list */
+.toc-progress { display: none; padding: 4px 10px 14px; font-size: 13.5px; color: var(--muted); }
+.toc-progress .meter { width: 100%; margin-top: 6px; }
+@media (max-width: 899px) { .toc-progress { display: block; } }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.toc a {
+  display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 10px;
+  padding: 7px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 15px; line-height: 1.3;
+}
+.toc a:hover { background: var(--surface-2); }
+.toc a[aria-current="page"] { background: var(--done-bg); font-weight: 600; }
+.toc .num {
+  width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+  font-family: var(--font-display); font-weight: 800; font-size: 15px; color: var(--muted);
+  border: 1.5px solid var(--line); background: var(--surface); padding-top: 2px;
+}
+.toc a.all-done .num { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.toc .count { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.toc a.all-done .count { color: var(--ok); }
+.toc .group { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; padding: 14px 10px 4px; }
+.toc-foot { margin-top: 18px; padding: 12px 10px 0; border-top: 1px solid var(--line); display: grid; gap: 8px; font-size: 13.5px; color: var(--muted); }
+.toc-foot button { font-size: 13.5px; min-height: 34px; padding: 4px 10px; justify-self: start; }
+
+/* ---------- lesson text */
+.page { max-width: 70ch; margin: 0 auto; }
+.eyebrow { font-size: 13px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0; }
+.page h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(30px, 3.6vw, 42px); line-height: 1.08; margin: 4px 0 18px; letter-spacing: -0.01em; text-wrap: balance; }
+.page h3 { font-family: var(--font-display); font-weight: 800; font-size: 23px; line-height: 1.2; margin: 34px 0 6px; }
+.page p, .page li { font-size: 17px; line-height: 1.68; }
+.page p { margin: 12px 0; }
+.page ul, .page ol { padding-left: 22px; }
+.page li { margin: 4px 0; }
+.page a { color: var(--accent); }
+.page :not(pre) > code { font-size: 0.86em; background: var(--surface-2); border: 1px solid var(--line); padding: 0 5px; border-radius: 5px; overflow-wrap: anywhere; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 8px 14px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.5; }
+th { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+.how {
+  border: 1px solid var(--line); background: var(--surface); border-radius: var(--radius);
+  padding: 14px 18px; margin: 0 0 22px; display: grid; gap: 6px;
+}
+.how b { font-family: var(--font-display); font-size: 19px; }
+.how p { margin: 0; font-size: 16px; color: var(--muted); }
+.how p strong { color: var(--ink); }
+
+/* code examples in the lesson */
+.example { margin: 16px 0 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+.ex-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 5px 6px 5px 14px; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.ex-label { font-size: 12px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.ex-label.file { text-transform: none; letter-spacing: 0; font-family: var(--font-code); font-size: 12.5px; }
+.ex-head .try { min-height: 32px; padding: 3px 12px; font-size: 14px; }
+.ex-code { margin: 0; padding: 12px 16px; overflow-x: auto; font-size: 14px; line-height: 1.6; tab-size: 4; white-space: pre; }
+.ex-out { border-top: 1px dashed var(--line); background: var(--bg); padding: 8px 16px 12px; }
+.ex-out pre { margin: 4px 0 0; font-size: 13.5px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--ink); }
+.example.error-example .ex-code { color: var(--err); background: var(--err-bg); }
+
+/* exercises in the lesson */
+.task {
+  margin: 18px 0 22px; border: 1px solid var(--holud-line); background: var(--holud-bg);
+  border-radius: var(--radius); padding: 14px 16px 14px;
+}
+.task.done { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); background: var(--done-bg); }
+.task-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.task-title { font-family: var(--font-display); font-weight: 800; font-size: 19px; line-height: 1.2; padding-top: 2px; }
+.pill { font-size: 12.5px; font-weight: 600; border-radius: 99px; padding: 2px 10px; border: 1px solid var(--holud-line); color: var(--holud); background: var(--surface); white-space: nowrap; }
+.task.done .pill { color: var(--ok); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.task .prompt { margin: 6px 0 12px; font-size: 17px; }
+.task-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.task-actions button { min-height: 36px; padding: 5px 14px; font-size: 14.5px; }
+.solution { margin-top: 12px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 10px 14px 12px; }
+.solution p { font-size: 15px !important; margin: 4px 0 !important; color: var(--muted); }
+.solution pre { margin: 8px 0; padding: 10px 12px; background: var(--bg); border-radius: 6px; overflow-x: auto; font-size: 13.5px; line-height: 1.6; }
+.solution button { min-height: 34px; padding: 4px 12px; font-size: 14px; }
+
+.pager { max-width: 70ch; margin: 40px auto 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pager a { display: grid; gap: 0; align-content: start; padding: 12px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); text-decoration: none; color: var(--ink); }
+.pager a:hover { border-color: var(--muted); }
+.pager a small { color: var(--muted); font-size: 13px; }
+.pager a.next { text-align: right; grid-column: 2; }
+.pager a span { font-weight: 600; }
+
+/* ---------- workspace */
+.taskbar { display: flex; align-items: center; gap: 8px 10px; flex-wrap: wrap; background: var(--holud-bg); border: 1px solid var(--holud-line); border-radius: var(--radius); padding: 10px 12px; }
+.taskbar.done { background: var(--done-bg); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.tb-text { flex: 1 1 240px; min-width: 0; font-size: 14.5px; line-height: 1.45; }
+.tb-text b { font-family: var(--font-display); font-size: 16.5px; margin-right: 6px; }
+.tb-text code { font-size: 0.88em; }
+.taskbar button { min-height: 36px; padding: 4px 14px; }
+.icon-btn { min-width: 36px; padding: 4px 8px !important; font-size: 18px !important; line-height: 1; }
+
+.pane { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+.pane-head {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  padding: 7px 12px; border-bottom: 1px solid var(--line); background: var(--surface-2);
+  font-size: 13px; color: var(--muted);
+}
+.pane-head b { color: var(--ink); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+
+.tabs { display: flex; align-items: stretch; gap: 0; overflow-x: auto; background: var(--surface-2); border-bottom: 1px solid var(--line); scrollbar-width: thin; }
+.tab-wrap { display: flex; align-items: center; border-right: 1px solid var(--line); flex: 0 0 auto; }
+.tab-wrap.active { background: var(--surface); box-shadow: inset 0 -2px 0 var(--accent); }
+.tab { border: 0; border-radius: 0; background: transparent; min-height: 40px; padding: 6px 12px; font-family: var(--font-code); font-size: 13px; color: var(--muted); white-space: nowrap; }
+.tab-wrap.active .tab { color: var(--ink); font-weight: 600; }
+.tab-wrap.fresh .tab::after { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--holud); margin-left: 7px; vertical-align: middle; }
+.tab-x { border: 0; background: transparent; min-height: 30px; min-width: 28px; padding: 0 6px; margin-right: 4px; color: var(--muted); font-size: 16px; line-height: 1; border-radius: 6px; }
+.tab-x:hover { background: var(--surface-2); color: var(--err); }
+.tab-add { border: 0; border-radius: 0; background: transparent; min-height: 40px; padding: 4px 14px; color: var(--muted); font-size: 18px; line-height: 1; flex: 0 0 auto; }
+.tab-add:hover { color: var(--ink); }
+.new-file { display: flex; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--line); background: var(--surface); flex-wrap: wrap; align-items: center; }
+.new-file input { font-family: var(--font-code); font-size: 14px; min-height: 36px; padding: 4px 10px; flex: 1 1 160px; min-width: 0; }
+.new-file button { min-height: 36px; padding: 4px 12px; font-size: 14px; }
+.new-file small { flex-basis: 100%; color: var(--muted); font-size: 13px; }
+
+.code-text { font-family: var(--font-code); font-size: 14.5px; line-height: 1.6; tab-size: 4; font-variant-ligatures: none; }
+.editor { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); min-height: 230px; max-height: 52vh; overflow: auto; }
+@media (max-width: 899px) { .editor { max-height: none; min-height: 260px; } }
+.gutter { padding: 12px 10px 12px 12px; text-align: right; color: var(--com); user-select: none; border-right: 1px solid var(--line); white-space: pre; font-variant-numeric: tabular-nums; }
+.stack { position: relative; min-width: 0; }
+.stack pre, .stack textarea {
+  margin: 0; padding: 12px 14px; border: 0; white-space: pre; overflow: hidden;
+  word-wrap: normal; overflow-wrap: normal;
+  font: inherit; letter-spacing: inherit; line-height: inherit; tab-size: inherit; font-variant-ligatures: inherit;
+}
+.stack pre { position: absolute; inset: 0; pointer-events: none; color: var(--ink); }
+.stack textarea {
+  position: relative; display: block; width: 100%; height: 100%; min-height: 100%;
+  resize: none; background: transparent; color: transparent; -webkit-text-fill-color: transparent;
+  caret-color: var(--ink); outline: none; border-radius: 0;
+}
+.stack textarea::selection { background: color-mix(in srgb, var(--accent) 28%, transparent); color: transparent; }
+.t-kw { color: var(--kw); }
+.t-str { color: var(--str); }
+.t-tpl { color: var(--holud); }
+.t-num { color: var(--num); }
+.t-com { color: var(--com); }
+.t-fn { color: var(--fn); }
+.t-const { color: var(--const); }
+
+.toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.toolbar .run { padding-inline: 22px; }
+.toolbar .grow { flex: 1 1 auto; }
+.kbd { font-family: var(--font-code); font-size: 12px; color: var(--muted); }
+@media (max-width: 899px) { .kbd { display: none; } }
+.status { font-variant-numeric: tabular-nums; }
+.status.ok { color: var(--ok); }
+.status.bad { color: var(--err); }
+
+.out { padding: 12px 14px; white-space: pre-wrap; overflow-wrap: anywhere; overflow: auto; min-height: 120px; max-height: 40vh; font-family: var(--font-code); font-size: 14px; line-height: 1.6; }
+@media (max-width: 899px) { .out { max-height: none; } }
+.out .ask { color: var(--muted); }
+.out .ask b { color: var(--holud); font-weight: 600; }
+.out .err { color: var(--err); background: var(--err-bg); border-radius: 6px; padding: 8px 10px; margin: 4px 0; display: block; white-space: pre; overflow-x: auto; }
+.out .note { color: var(--muted); font-family: var(--font-body); font-size: 14.5px; }
+.report { font-family: var(--font-body); font-size: 15px; white-space: normal; display: grid; gap: 8px; }
+.report h4 { margin: 0; font-family: var(--font-display); font-size: 19px; line-height: 1.2; }
+.report h4.win { color: var(--ok); }
+.report h4.lose { color: var(--holud); }
+.report ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.report li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 6px; align-items: start; }
+.report li::before { font-weight: 700; }
+.report li.ok::before { content: "✓"; color: var(--ok); }
+.report li.bad::before { content: "✗"; color: var(--err); }
+.report li > div { min-width: 0; }
+.report pre { margin: 6px 0 0; font-family: var(--font-code); font-size: 13px; line-height: 1.55; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 180px; overflow: auto; }
+.report pre.err { white-space: pre; overflow-x: auto; }
+.report small { color: var(--muted); display: block; margin-top: 4px; font-size: 13px; }
+.report .row { display: flex; gap: 8px; flex-wrap: wrap; }
+.report .row button { min-height: 36px; padding: 4px 14px; font-size: 14.5px; }
+
+.answers { border-top: 1px solid var(--line); }
+.answers summary { cursor: pointer; padding: 8px 14px; font-size: 13.5px; color: var(--muted); list-style-position: inside; }
+.answers summary b { color: var(--holud); font-weight: 600; }
+.answers textarea {
+  display: block; width: calc(100% - 28px); margin: 0 14px 12px; min-height: 64px; resize: vertical;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); padding: 8px 10px; font-size: 14px;
+}
+
+.preview { padding: 16px 12px 6px; display: grid; justify-items: center; background: var(--bg); min-width: 0; }
+.preview > .be-site { width: 100%; }
+.preview > * { max-width: 100%; }
+.page-frame { width: 100%; min-height: 260px; border: 1px solid var(--line); border-radius: 8px; background: #ffffff; display: block; }
+.check-host { position: fixed; left: -10000px; top: 0; width: 520px; visibility: hidden; pointer-events: none; }
+
+.toast {
+  position: fixed; z-index: 60; left: 50%; bottom: max(18px, env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%); display: flex; align-items: center; gap: 12px;
+  max-width: calc(100vw - 32px); padding: 10px 10px 10px 16px; border-radius: 10px;
+  background: var(--ink); color: var(--bg); box-shadow: var(--shadow); font-size: 14.5px;
+}
+.toast button { background: transparent; color: var(--bg); border-color: color-mix(in srgb, var(--bg) 40%, transparent); min-height: 34px; padding: 3px 12px; font-size: 14px; }
+@media (prefers-reduced-motion: no-preference) {
+  .flash { animation: flash 0.7s ease-out; }
+  @keyframes flash { from { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 45%, transparent); } to { box-shadow: 0 0 0 0 transparent; } }
+}
+</style>
+</head>
+<body data-view="lesson">
+<header class="top">
+  <a class="logo" href="#start" aria-label="Learn BE, home">BE<span>Learn</span></a>
+  <button class="toc-btn" id="toc-btn" type="button" aria-expanded="false" aria-controls="toc">☰ <span id="toc-label">Lessons</span></button>
+  <div class="progress" title="Exercises done"><span class="meter"><i id="meter"></i></span><span id="progress-text">0 of 30 done</span></div>
+  <a class="top-link" id="playground-link" href="index.html" target="_blank" rel="noopener">Playground ↗</a>
+  <nav class="switch" aria-label="Show">
+    <button type="button" data-view="lesson" aria-pressed="true">Lesson</button>
+    <button type="button" data-view="code" aria-pressed="false">Code</button>
+  </nav>
+</header>
+
+<div class="app">
+  <aside class="toc" id="toc" aria-label="Lessons">
+    <div class="toc-progress"><span id="toc-progress-text">0 of 30 exercises done</span><span class="meter"><i id="toc-meter"></i></span></div>
+    <ol id="toc-list"></ol>
+    <div class="toc-foot">
+      <span>Your progress and code stay in this browser.</span>
+      <button type="button" id="reset" class="ghost">Start over</button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="lesson" id="lesson" tabindex="-1">
+    <article class="page" id="page"></article>
+    <nav class="pager" id="pager" aria-label="Lessons"></nav>
+  </main>
+
+  <section class="work" id="work" aria-label="Your code">
+    <div class="taskbar" id="taskbar" hidden>
+      <div class="tb-text" id="tb-text"></div>
+      <button type="button" class="check-btn" id="check">Check my code</button>
+      <button type="button" class="ghost icon-btn" id="task-close" aria-label="Stop this exercise" title="Stop this exercise">×</button>
+    </div>
+
+    <div class="pane">
+      <div class="tabs" id="tabs" role="tablist" aria-label="Files"></div>
+      <form class="new-file" id="new-file" hidden>
+        <input id="new-name" value="notun.be" aria-label="New file name" spellcheck="false" autocomplete="off">
+        <button type="submit" class="primary">Make file</button>
+        <button type="button" id="new-cancel" class="ghost">Cancel</button>
+        <small id="new-help">A .be file for code, or .txt / .json for data. Other files can use it with <code>anao</code> or <code>file_porho</code>.</small>
+      </form>
+      <div class="editor code-text" id="editor">
+        <div class="gutter" id="gutter" aria-hidden="true">1</div>
+        <div class="stack">
+          <pre id="highlight" aria-hidden="true"></pre>
+          <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Code"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button type="button" class="primary run" id="run" title="Ctrl + Enter">▶ Run</button>
+      <span class="kbd">Ctrl + Enter</span>
+      <span class="grow"></span>
+      <span class="status" id="status"></span>
+    </div>
+
+    <div class="pane">
+      <div class="pane-head"><b>Output</b><span id="run-name"></span></div>
+      <div class="out" id="output" aria-live="polite"></div>
+      <details class="answers" id="answers-box">
+        <summary>Answers for <b>jiggesh()</b>, one per line</summary>
+        <textarea id="answers" class="code-text" spellcheck="false" placeholder="Shuvo&#10;22" aria-label="Answers for jiggesh, one per line"></textarea>
+      </details>
+    </div>
+
+    <section class="pane" id="preview-pane" aria-label="Preview" hidden>
+      <div class="pane-head"><b id="preview-title">App</b><span id="preview-note"></span></div>
+      <div class="preview" id="preview"></div>
+    </section>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button type="button" id="toast-btn">Undo</button></div>
+
+<script src="keywords.js"></script>
+<script src="be.js"></script>
+<script src="lessons.js"></script>
+<script>
+(function () {
+  "use strict";
+  var BE = window.BE;
+  var WORDS = window.BE_WORDS;
+  var L = window.BE_LESSONS;
+  var STORE = "be-learn-v1";
+  var WELCOME = '# This is main.be. Change the code, then click Run.\ndhoro nam = "Shuvo"\ndekhao "Hello, {nam}!"\ndekhao "2 + 3 =", 2 + 3\n';
+  // Guesses for the guessing game (it has no answers in the course, because the number is random)
+  var GUESSES = ["25", "37", "12", "44", "6", "31", "18", "40", "3", "49"];
+
+  function $(id) { return document.getElementById(id); }
+  var source = $("source"), highlight = $("highlight"), gutter = $("gutter"), output = $("output"), status = $("status");
+  var answers = $("answers"), answersBox = $("answers-box"), tabsEl = $("tabs"), previewPane = $("preview-pane");
+  var preview = $("preview"), previewTitle = $("preview-title"), previewNote = $("preview-note"), pageEl = $("page");
+  var lessonEl = $("lesson"), taskbar = $("taskbar");
+
+  // ------------------------------------------------------------------ saved state
+  var state = { done: {}, attempts: {}, files: {}, open: "main.be", task: null, page: "start", shown: {} };
+  var firstVisit = true;
+  try {
+    var saved = JSON.parse(localStorage.getItem(STORE) || "null");
+    if (saved && typeof saved === "object") {
+      firstVisit = false;
+      ["done", "attempts", "files", "shown"].forEach(function (k) { if (saved[k] && typeof saved[k] === "object") state[k] = saved[k]; });
+      if (typeof saved.open === "string") state.open = saved.open;
+      if (typeof saved.page === "string") state.page = saved.page;
+      if (typeof saved.task === "string" && L.tasks[saved.task]) state.task = saved.task;
+    }
+  } catch (e) { /* storage is optional */ }
+  if (typeof state.files["main.be"] !== "string") {
+    var rest = state.files;
+    state.files = { "main.be": WELCOME };
+    Object.keys(rest).forEach(function (k) { if (typeof rest[k] === "string") state.files[k] = rest[k]; });
+  }
+  if (typeof state.files[state.open] !== "string") state.open = "main.be";
+  var saveTimer = null;
+  function save() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* storage is optional */ }
+    }, 200);
+  }
+  function has(obj, key) { return Object.prototype.hasOwnProperty.call(obj, key); }
+
+  // ------------------------------------------------------------------ colors for code
+  var groups = {};
+  var groupOf = { LET: "t-kw", FUNC: "t-kw", CLASS: "t-kw", TRUE: "t-const", FALSE: "t-const", NULL: "t-const", THIS: "t-const", SUPER: "t-const" };
+  Object.keys(WORDS.keywords).forEach(function (job) { groups[WORDS.keywords[job]] = groupOf[job] || "t-kw"; });
+  var NAME_START = /[A-Za-z_]/, NAME_PART = /[A-Za-z0-9_]/, DIGIT = /[0-9]/;
+
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function span(cls, text) { return '<span class="' + cls + '">' + esc(text) + "</span>"; }
+
+  function paintCode(text) {
+    var c = Array.from(text);
+    var html = "";
+    var i = 0;
+    while (i < c.length) {
+      var ch = c[i];
+      if (ch === "#") {
+        var j = i; while (j < c.length && c[j] !== "\n") j++;
+        html += span("t-com", c.slice(i, j).join("")); i = j;
+      } else if (ch === '"' || ch === "'") {
+        var q = ch; var parts = span("t-str", ch); i++;
+        var buf = "";
+        while (i < c.length && c[i] !== "\n" && c[i] !== q) {
+          if (c[i] === "\\" && i + 1 < c.length && c[i + 1] !== "\n") { buf += c[i] + c[i + 1]; i += 2; continue; }
+          if (c[i] === "{") {
+            if (buf) { parts += span("t-str", buf); buf = ""; }
+            var k = i + 1; var depth = 0;
+            while (k < c.length && c[k] !== "\n" && c[k] !== q && !(c[k] === "}" && depth === 0)) {
+              if (c[k] === "{") depth++; else if (c[k] === "}") depth--;
+              k++;
+            }
+            parts += span("t-tpl", "{") + paintCode(c.slice(i + 1, k).join(""));
+            if (c[k] === "}") { parts += span("t-tpl", "}"); k++; }
+            i = k; continue;
+          }
+          buf += c[i]; i++;
+        }
+        if (buf) parts += span("t-str", buf);
+        if (i < c.length && c[i] === q) { parts += span("t-str", q); i++; }
+        html += parts;
+      } else if (DIGIT.test(ch)) {
+        var n = i; while (n < c.length && (DIGIT.test(c[n]) || (c[n] === "." && DIGIT.test(c[n + 1] || "")))) n++;
+        html += span("t-num", c.slice(i, n).join("")); i = n;
+      } else if (NAME_START.test(ch)) {
+        var m = i + 1; while (m < c.length && NAME_PART.test(c[m])) m++;
+        var word = c.slice(i, m).join("");
+        var p = m; while (p < c.length && (c[p] === " " || c[p] === "\t")) p++;
+        var cls = groups[word] || (c[p] === "(" ? "t-fn" : "");
+        html += cls ? span(cls, word) : esc(word);
+        i = m;
+      } else {
+        html += esc(ch); i++;
+      }
+    }
+    return html;
+  }
+
+  // HTML pages: tags and their quoted values in color, and the BE inside <script type="text/be"> as BE
+  function paintTag(tag) {
+    return tag.replace(/^(<\/?)([A-Za-z][\w-]*)([\s\S]*?)(\/?>)$/, function (all, open, name, attrs, close) {
+      var painted = esc(attrs).replace(/(&quot;[^&]*?&quot;|'[^']*')/g, '<span class="t-str">$1</span>');
+      return '<span class="t-kw">' + esc(open + name) + "</span>" + painted + '<span class="t-kw">' + esc(close) + "</span>";
+    });
+  }
+  function paintHtml(text) {
+    var out = "";
+    var re = /(<\!--[\s\S]*?-->)|(<[s]cript\b[^>]*type=["']text\/be["'][^>]*>)([\s\S]*?)(<\/script>|$)|(<\/?[A-Za-z][^>]*>)/g;
+    var last = 0, m;
+    while ((m = re.exec(text))) {
+      out += esc(text.slice(last, m.index));
+      if (m[1]) out += span("t-com", m[1]);
+      else if (m[2]) out += paintTag(m[2]) + paintCode(m[3]) + (m[4] ? paintTag(m[4]) : "");
+      else out += paintTag(m[5]);
+      last = re.lastIndex;
+      if (m[0] === "") re.lastIndex++;
+    }
+    return out + esc(text.slice(last));
+  }
+  function paintFor(name, text) {
+    if (/\.be$/.test(name)) return paintCode(text);
+    if (/\.html?$/.test(name)) return paintHtml(text);
+    return esc(text);
+  }
+
+  // ------------------------------------------------------------------ files and the editor
+  var fresh = {}; // files a program made that haven't been opened yet
+
+  function fileNames() { return Object.keys(state.files); }
+  function renderTabs() {
+    tabsEl.textContent = "";
+    fileNames().forEach(function (name) {
+      var wrap = document.createElement("span");
+      wrap.className = "tab-wrap" + (name === state.open ? " active" : "") + (fresh[name] ? " fresh" : "");
+      var tab = document.createElement("button");
+      tab.type = "button"; tab.className = "tab"; tab.setAttribute("role", "tab");
+      tab.setAttribute("aria-selected", name === state.open ? "true" : "false");
+      tab.textContent = name;
+      if (fresh[name]) tab.title = "Your program made this file";
+      tab.addEventListener("click", function () { openFile(name); source.focus(); });
+      wrap.appendChild(tab);
+      if (name !== "main.be") {
+        var x = document.createElement("button");
+        x.type = "button"; x.className = "tab-x"; x.textContent = "×";
+        x.setAttribute("aria-label", "Delete " + name); x.title = "Delete " + name;
+        x.addEventListener("click", function () { deleteFile(name); });
+        wrap.appendChild(x);
+      }
+      tabsEl.appendChild(wrap);
+    });
+    var add = document.createElement("button");
+    add.type = "button"; add.className = "tab-add"; add.textContent = "+";
+    add.setAttribute("aria-label", "New file"); add.title = "New file";
+    add.addEventListener("click", function () {
+      $("new-file").hidden = false;
+      var input = $("new-name");
+      input.value = suggestName();
+      input.focus(); input.setSelectionRange(0, input.value.lastIndexOf("."));
+    });
+    tabsEl.appendChild(add);
+  }
+  function suggestName() {
+    var n = 1;
+    while (has(state.files, n === 1 ? "notun.be" : "notun" + n + ".be")) n++;
+    return n === 1 ? "notun.be" : "notun" + n + ".be";
+  }
+  function openFile(name) {
+    if (!has(state.files, name)) return;
+    state.open = name;
+    delete fresh[name];
+    source.value = state.files[name];
+    source.setAttribute("aria-label", "Code in " + name);
+    renderTabs();
+    refresh(false);
+    save();
+  }
+  function deleteFile(name) {
+    var text = state.files[name];
+    delete state.files[name];
+    delete fresh[name];
+    if (state.open === name) openFile("main.be"); else renderTabs();
+    save();
+    toast("Deleted " + name + ".", "Undo", function () { state.files[name] = text; openFile(name); });
+  }
+  function setFile(name, text) {
+    state.files[name] = text;
+    if (state.open === name) { source.value = text; refresh(false); }
+    save();
+  }
+
+  function refresh(edited) {
+    var text = source.value;
+    highlight.innerHTML = paintFor(state.open, text) + "\n";
+    var lines = text.split("\n").length;
+    var nums = [];
+    for (var i = 1; i <= lines; i++) nums.push(i);
+    gutter.textContent = nums.join("\n");
+    source.style.height = "auto";
+    source.style.height = source.scrollHeight + "px";
+    source.style.width = "auto";
+    source.style.width = Math.max(source.parentNode.clientWidth, source.scrollWidth) + "px";
+    if (edited) {
+      state.files[state.open] = text;
+      if (state.task && taskFile(L.tasks[state.task]) === state.open) state.attempts[state.task] = text;
+      save();
+    }
+    if (/jiggesh\s*\(/.test(text) && !answersBox.open && !answers.value) answersBox.open = true;
+  }
+
+  // Put new code in a file. If the file had other code, the toast can bring it back.
+  function replaceFile(name, text, what) {
+    var before = has(state.files, name) ? state.files[name] : null;
+    state.files[name] = text;
+    if (before !== null && before.trim() && before !== text && !isKnownCode(before)) {
+      toast(name + " now has " + what + ".", "Undo", function () { setFile(name, before); openFile(name); });
+    }
+  }
+  // Code that came from the course as it is (no need to offer it back)
+  var knownCode = {};
+  L.codes.forEach(function (c) { knownCode[c.code] = true; });
+  Object.keys(L.tasks).forEach(function (k) { knownCode[L.tasks[k].starter] = true; });
+  knownCode[WELCOME] = true;
+  function isKnownCode(text) { return has(knownCode, text); }
+
+  // ------------------------------------------------------------------ the toast
+  var toastTimer = null, toastAction = null;
+  function toast(text, button, action) {
+    $("toast-text").textContent = text;
+    $("toast-btn").textContent = button || "";
+    $("toast-btn").hidden = !button;
+    toastAction = action || null;
+    $("toast").hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { $("toast").hidden = true; }, 7000);
+  }
+  $("toast-btn").addEventListener("click", function () {
+    $("toast").hidden = true;
+    if (toastAction) toastAction();
+  });
+
+  // ------------------------------------------------------------------ running code
+  var lastRun = null;
+  function addLine(text, cls) {
+    var el = document.createElement("span");
+    if (cls) el.className = cls;
+    el.textContent = text;
+    output.appendChild(el);
+    output.appendChild(document.createTextNode("\n"));
+    return el;
+  }
+  function formatError(err, code) { return BE.formatError(err, err.source || code, err.filename || null); }
+  function stopLast() {
+    if (lastRun) { try { lastRun.stop(); } catch (e) { /* already closed */ } }
+    lastRun = null;
+    preview.textContent = "";
+    previewPane.hidden = true;
+  }
+  function folder(files, onWrite) {
+    return {
+      read: function (path) { return has(files, path) ? files[path] : null; },
+      write: function (path, text) { files[path] = text; if (onWrite) onWrite(path); }
+    };
+  }
+  function answerQueue() {
+    var queue = answers.value.split("\n");
+    if (queue.length === 1 && queue[0] === "") queue = [];
+    return queue;
+  }
+  function runnable(name) { return /\.(be|html?)$/.test(name) ? name : "main.be"; }
+
+  function runCurrent() {
+    var name = runnable(state.open);
+    if (/\.html?$/.test(name)) return runPage(name);
+    return runBe(name);
+  }
+
+  function runBe(name) {
+    stopLast();
+    output.textContent = "";
+    $("run-name").textContent = name;
+    var code = state.files[name] || "";
+    var queue = answerQueue();
+    var asked = 0, missing = 0;
+    var written = {};
+    var opened = {};
+    function afterWrite(path) {
+      written[path] = true;
+      if (path !== state.open) fresh[path] = true;
+      if (path === state.open) { source.value = state.files[path]; refresh(false); }
+      renderTabs();
+      save();
+    }
+    function appHost(kind, title) {
+      opened[kind] = true;
+      previewPane.hidden = false;
+      var both = opened.app && opened.website;
+      previewTitle.textContent = both ? "Preview" : kind === "website" ? "Website" : "App";
+      previewNote.textContent = both ? "" : kind === "website" ? title.replace("http://", "") + " · click its links and buttons" : "click the buttons, or use the keyboard";
+      return preview;
+    }
+    var started = performance.now();
+    var result = BE.run(code, {
+      path: name,
+      timeLimitMs: 5000,
+      files: folder(state.files, afterWrite),
+      input: function (prompt) {
+        asked += 1;
+        var answer = queue.length ? queue.shift() : null;
+        if (answer === null) missing += 1;
+        var el = document.createElement("span");
+        el.className = "ask";
+        el.textContent = prompt;
+        var b = document.createElement("b");
+        b.textContent = answer === null ? "(no answer)" : answer;
+        el.appendChild(b);
+        output.appendChild(el);
+        output.appendChild(document.createTextNode("\n"));
+        return answer === null ? "" : answer;
+      },
+      onOutput: function (text) { addLine(text); },
+      onError: function (err) { addLine(formatError(err, code), "err"); },
+      appHost: appHost
+    });
+    lastRun = result;
+    var ms = performance.now() - started;
+    if (result.error) {
+      addLine(formatError(result.error, code), "err");
+      status.textContent = "Error";
+      status.className = "status bad";
+    } else {
+      if (opened.app || opened.website) {
+        if (!result.output.length && !asked) addLine("(Your " + (opened.website && !opened.app ? "website" : "app") + " is open in the preview below.)", "note");
+      } else if (!result.output.length && !asked) {
+        addLine("(The program showed nothing. Use dekhao to show something.)", "note");
+      }
+      status.textContent = "Ran in " + (ms < 1000 ? Math.max(1, Math.round(ms)) + " ms" : (ms / 1000).toFixed(1) + " s");
+      status.className = "status ok";
+    }
+    if (missing) {
+      addLine("(jiggesh() asked " + asked + " time" + (asked === 1 ? "" : "s") + ". Type the answers in the box under the output, one per line.)", "note");
+      answersBox.open = true;
+    }
+    var made = Object.keys(written);
+    if (made.length) addLine("(Saved " + made.join(", ") + " in this page's folder. Click a tab above the code to see it.)", "note");
+    if (!previewPane.hidden && isPhone()) previewPane.scrollIntoView({ block: "nearest" });
+    return result;
+  }
+
+  // HTML pages run in a frame, with BE loaded where the page loads be-web.js
+  var frameLogs = {}, frameCount = 0;
+  window.beLearnLog = function (id, text) { if (frameLogs[id]) frameLogs[id](text); };
+  function pageSource(html, id) {
+    var here = document.baseURI;
+    var logger = "<script>(function(){var l=console.log;console.log=function(){var t=[].map.call(arguments,String).join(' ');" +
+      "try{parent.beLearnLog('" + id + "',t)}catch(e){}l.apply(console,arguments)}})()<\/script>";
+    var be = logger + '<script src="' + esc(new URL("keywords.js", here).href) + '"><\/script><script src="' + esc(new URL("be.js", here).href) + '"><\/script>';
+    var withBe = html.replace(/<script\b[^>]*\bsrc=["']?(?:[^"'>]*\/)?be-web\.js["']?[^>]*>\s*<\/script>/i, function () { return be; });
+    var loaded = withBe !== html;
+    if (!loaded && /<script\b[^>]*type=["']text\/be["']/i.test(html)) {
+      withBe = html.replace(/<script\b[^>]*type=["']text\/be["']/i, function (m) { return be + m; });
+    }
+    return { html: withBe, loaded: loaded };
+  }
+  function makePageFrame(html, host, onLog) {
+    var id = "f" + (++frameCount);
+    frameLogs[id] = onLog;
+    var page = pageSource(html, id);
+    var iframe = document.createElement("iframe");
+    iframe.className = "page-frame";
+    iframe.title = "Your page";
+    var loaded = new Promise(function (resolve) {
+      iframe.addEventListener("load", function () {
+        var fit = function () {
+          try { iframe.style.height = Math.max(260, iframe.contentDocument.documentElement.scrollHeight + 6) + "px"; } catch (e) { /* not reachable */ }
+        };
+        fit();
+        try { new MutationObserver(fit).observe(iframe.contentDocument.documentElement, { childList: true, subtree: true, characterData: true, attributes: true }); } catch (e) { /* fine */ }
+        setTimeout(resolve, 80);
+      }, { once: true });
+    });
+    iframe.srcdoc = page.html;
+    host.appendChild(iframe);
+    return { iframe: iframe, loaded: loaded, hasBe: page.loaded, stop: function () { delete frameLogs[id]; iframe.remove(); } };
+  }
+  function runPage(name) {
+    stopLast();
+    output.textContent = "";
+    $("run-name").textContent = name;
+    var html = state.files[name] || "";
+    previewPane.hidden = false;
+    previewTitle.textContent = "Page";
+    previewNote.textContent = name;
+    var frame = makePageFrame(html, preview, function (text) { addLine(text); });
+    lastRun = frame;
+    addLine("(Your page is open in the preview below. Messages from dekhao show here.)", "note");
+    if (!frame.hasBe && /text\/be/.test(html)) addLine('(Tip: add <script src="be-web.js"><\/script> before your BE code, so the page works on your computer too.)', "note");
+    status.textContent = "Page opened";
+    status.className = "status ok";
+    if (isPhone()) previewPane.scrollIntoView({ block: "nearest" });
+    return frame;
+  }
+
+  // ------------------------------------------------------------------ checking exercises
+  function taskFile(task) { return task && task.page ? "page.html" : "main.be"; }
+  function quoteJoin(list) { return list.length < 2 ? list.join("") : list.slice(0, -1).join(", ") + " and " + list[list.length - 1]; }
+  function quoteList(list) { return list.map(function (w) { return "“" + w + "”"; }).join(" and "); }
+  function tidy(text) { return text.split("\n").map(function (l) { return l.replace(/\s+$/, ""); }).join("\n").replace(/\n+$/, ""); }
+  function hiddenHost() {
+    var host = document.createElement("div");
+    host.className = "check-host";
+    host.setAttribute("aria-hidden", "true");
+    document.body.appendChild(host);
+    return host;
+  }
+  function wait(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+
+  function runQuiet(code, inputs, files, host) {
+    var queue = (inputs || []).slice();
+    var opened = {};
+    var result = BE.run(code, {
+      path: "main.be",
+      timeLimitMs: 3000,
+      files: folder(files),
+      input: function () { return queue.length ? queue.shift() : ""; },
+      onError: function () {},
+      appHost: function (kind) { opened[kind] = true; return host; }
+    });
+    result.opened = opened;
+    result.text = result.output.join("\n");
+    return result;
+  }
+
+  var CUSTOM = {
+    marks_total: function (ctx) {
+      var raw = ctx.files["marks.json"];
+      if (raw === undefined) return ["Save the marks in marks.json with file_lekho."];
+      var data;
+      try { data = JSON.parse(raw); } catch (e) { return ["marks.json doesn't hold JSON yet. Make the text with json_banao(...)."]; }
+      if (!data || typeof data !== "object" || Array.isArray(data)) return ['Save a dictionary of marks in marks.json, like {"Bangla": 85, "Math": 92}.'];
+      var nums = Object.keys(data).map(function (k) { return data[k]; }).filter(function (v) { return typeof v === "number"; });
+      if (!nums.length) return ["The dictionary in marks.json should have numbers as its marks."];
+      var total = nums.reduce(function (a, b) { return a + b; }, 0);
+      var shown = Number.isInteger(total) ? String(total) : String(Math.round(total * 1e6) / 1e6);
+      return ctx.text.indexOf(shown) >= 0 ? [] : ["The marks in marks.json add up to " + shown + ", but the output doesn't show " + shown + "."];
+    },
+    app_double: function (ctx) {
+      var box = ctx.host.querySelector("input"), button = ctx.host.querySelector("button");
+      if (!box) return ['Add an input box with amar_janala.ghor("").'];
+      if (!button) return ["Add a button with amar_janala.botam(...)."];
+      var tries = [["21", "42"], ["5", "10"]];
+      for (var i = 0; i < tries.length; i++) {
+        box.value = tries[i][0];
+        box.dispatchEvent(new Event("input", { bubbles: true }));
+        button.click();
+        if (ctx.host.textContent.indexOf(tries[i][1]) < 0) return ["After typing " + tries[i][0] + " and clicking the button, the app should show " + tries[i][1] + "."];
+      }
+      return [];
+    },
+    app_reset: function (ctx) {
+      var buttons = Array.prototype.slice.call(ctx.host.querySelectorAll("button"));
+      var reset = buttons.filter(function (b) { return /reset/i.test(b.textContent); })[0];
+      var plus = buttons.filter(function (b) { return b.textContent.indexOf("+") >= 0; })[0];
+      if (!reset) return ['Add a button with the text "Reset".'];
+      if (!plus) return ['Keep the counter\'s "+ 1" button.'];
+      plus.click(); plus.click(); plus.click();
+      var shown = Array.prototype.slice.call(ctx.host.querySelectorAll("*")).filter(function (el) {
+        return !el.children.length && el.tagName !== "BUTTON" && el.textContent.trim() === "3";
+      })[0];
+      if (!shown) return ["Clicking + 1 three times should show 3."];
+      reset.click();
+      return shown.textContent.trim() === "0" ? [] : ["After clicking Reset, the counter should show 0 (it shows " + shown.textContent.trim() + ")."];
+    },
+    page_quiz: async function (ctx) {
+      var count = (ctx.code.match(/"prosno"\s*:/g) || []).length;
+      if (count < 5) return ["The quiz has " + count + " questions. Add " + (5 - count) + " more inside prosno_guli, so it has 5."];
+      var doc = ctx.doc;
+      var box = doc.getElementById("uttor"), button = doc.getElementById("check"), question = doc.getElementById("prosno");
+      if (!box || !button || !question) return ["Keep the quiz's #prosno, #uttor and #check elements."];
+      for (var i = 0; i < count; i++) {
+        box.value = "?";
+        button.click();
+        await wait(5);
+      }
+      return /of\s+5\b/.test(question.textContent) ? [] : ["After answering all the questions, the quiz should say “... of 5”. It says: " + question.textContent.trim()];
+    },
+    page_todo: async function (ctx) {
+      var doc = ctx.doc;
+      var box = doc.querySelector("input:not([type]), input[type=text]"), button = doc.querySelector("button");
+      if (!box) return ["Add an input box: <input id=\"kaj_ghor\">."];
+      if (!button) return ["Add a button: <button id=\"jog\">Add</button>."];
+      var items = ["Buy rice", "Call Nanu"];
+      for (var i = 0; i < items.length; i++) {
+        box.value = items[i];
+        box.dispatchEvent(new Event("input", { bubbles: true }));
+        button.click();
+        await wait(10);
+        var found = Array.prototype.slice.call(doc.querySelectorAll("li")).some(function (li) { return li.textContent.indexOf(items[i]) >= 0; });
+        if (!found) return ["After typing “" + items[i] + "” and clicking the button, it should appear in a list item (li) on the page."];
+      }
+      return [];
+    }
+  };
+  var CUSTOM_LABEL = {
+    marks_total: "marks.json holds your marks, and the output shows their total",
+    app_double: "Typing 21 and clicking shows 42, and 5 shows 10",
+    app_reset: "Three clicks on + 1 show 3, and Reset brings it back to 0",
+    page_quiz: "The quiz has 5 questions and counts to “of 5”",
+    page_todo: "Typing a task and clicking the button adds it to the list"
+  };
+
+  function caseLabel(c) {
+    if (c.custom) return CUSTOM_LABEL[c.custom];
+    var parts = [];
+    if (c.inputs) parts.push("Typing " + quoteJoin(c.inputs));
+    if (c.append) parts.push(c.append.indexOf("\n") < 0 ? "the test " + c.append.replace(/^dekhao\s+/, "") : "a test of your code");
+    var shows = c.same ? "the output is right" : c.want ? "shows " + quoteList(c.want) : "it runs";
+    if (c.files) shows += " and saves " + Object.keys(c.files).join(", ");
+    return parts.length ? parts.join(", ") + " → " + shows : shows.charAt(0).toUpperCase() + shows.slice(1);
+  }
+
+  async function checkCase(key, task, c, code, index) {
+    var files = JSON.parse(JSON.stringify(state.files));
+    var host = hiddenHost();
+    var runCode = c.append ? code.replace(/\s+$/, "") + "\n" + c.append + "\n" : code;
+    var result = runQuiet(runCode, c.inputs, files, host);
+    var fails = [];
+    var when = !c.inputs ? "" : c.inputs.length === 1 ? " when the answer is " + c.inputs[0] : " when the answers are " + quoteJoin(c.inputs);
+    try {
+      if (result.error) {
+        fails.push({
+          text: "Your program stopped with an error" + when + ":",
+          pre: formatError(result.error, runCode),
+          small: c.append ? "To test your code, the checker added this after it: " + c.append.split("\n")[0] : ""
+        });
+      } else {
+        if (task.opens && !result.opened[task.opens]) {
+          fails.push({ text: task.opens === "app" ? "Open a window with janala(...) and show it with chalao()." : "Make a website with website() and start it with chalao(8000)." });
+        }
+        (c.want || []).forEach(function (w) {
+          if (result.text.indexOf(w) < 0) fails.push({ text: "The output should show “" + w + "”" + when + ".", got: result.text });
+        });
+        (c.avoid || []).forEach(function (w) {
+          if (result.text.indexOf(w) >= 0) fails.push({ text: "The output shouldn't show “" + w + "”" + when + ".", got: result.text });
+        });
+        if (c.same) {
+          var answerHost = hiddenHost();
+          var expected = runQuiet(task.answer.full || task.answer.code, c.inputs, JSON.parse(JSON.stringify(state.files)), answerHost);
+          expected.stop();
+          answerHost.remove();
+          if (tidy(result.text) !== tidy(expected.text)) fails.push({ text: "The output isn't right yet.", expected: expected.text, got: result.text });
+        }
+        Object.keys(c.files || {}).forEach(function (name) {
+          if (!has(files, name)) { fails.push({ text: "Your program should save the file " + name + "." }); return; }
+          c.files[name].forEach(function (w) {
+            if (files[name].indexOf(w) < 0) fails.push({ text: name + " should have “" + w + "” in it" + when + ".", got: files[name] });
+          });
+        });
+        if (task.lines && index === 0) {
+          var count = result.text ? result.text.split("\n").filter(function (l) { return l.trim(); }).length : 0;
+          if (count < task.lines) fails.push({ text: "Show at least " + task.lines + " line" + (task.lines === 1 ? "" : "s") + " with dekhao (yours shows " + count + ")." });
+        }
+        if (c.custom && !fails.length) {
+          var more = await CUSTOM[c.custom]({ host: host, files: files, text: result.text, code: code });
+          more.forEach(function (t) { fails.push({ text: t }); });
+        }
+      }
+    } finally {
+      try { result.stop(); } catch (e) { /* closed */ }
+      host.remove();
+    }
+    return { label: caseLabel(c), fails: fails };
+  }
+
+  async function checkPage(task, c, code) {
+    var host = hiddenHost();
+    var frame = makePageFrame(code, host, function () {});
+    var fails = [];
+    try {
+      await frame.loaded;
+      var doc = null;
+      try { doc = frame.iframe.contentDocument; } catch (e) { doc = null; }
+      var errors = doc && doc.getElementById("be-errors");
+      if (!doc) fails.push({ text: "This browser didn't let the checker look inside your page. Click ▶ Run and test it yourself: type something and click the button." });
+      else if (errors) fails.push({ text: "The page shows a BE error:", pre: errors.textContent });
+      else {
+        var more = await CUSTOM[c.custom]({ doc: doc, code: code });
+        more.forEach(function (t) { fails.push({ text: t }); });
+        errors = doc.getElementById("be-errors");
+        if (!more.length && errors) fails.push({ text: "The page showed a BE error while it was tested:", pre: errors.textContent });
+      }
+    } finally {
+      frame.stop();
+      host.remove();
+    }
+    return { label: caseLabel(c), fails: fails };
+  }
+
+  var checking = false;
+  async function check(key) {
+    var task = L.tasks[key];
+    if (!task || checking) return false;
+    checking = true;
+    $("check").disabled = true;
+    stopLast();
+    output.textContent = "";
+    status.textContent = "Checking…";
+    status.className = "status";
+    var file = taskFile(task);
+    $("run-name").textContent = file;
+    var code = state.files[file] || "";
+    var rows = [];
+    try {
+      var missingWords = (task.uses || []).filter(function (w) { return code.indexOf(w) < 0; });
+      if (missingWords.length) rows.push({ label: "", fails: missingWords.map(function (w) { return { text: "Use " + w + " in your code — this exercise is about it." }; }) });
+      var cases = task.cases && task.cases.length ? task.cases : [{}];
+      for (var i = 0; i < cases.length; i++) {
+        rows.push(task.page ? await checkPage(task, cases[i], code) : await checkCase(key, task, cases[i], code, i));
+      }
+    } catch (error) {
+      rows.push({ label: "", fails: [{ text: "The checker couldn't run your code: " + (error && error.message ? error.message : error) }] });
+    } finally {
+      checking = false;
+      $("check").disabled = false;
+    }
+    var passed = rows.every(function (r) { return !r.fails.length; });
+    showReport(key, rows, passed);
+    if (passed) {
+      var first = !state.done[key];
+      state.done[key] = true;
+      save();
+      updateProgress();
+      if (first) taskbar.classList.add("flash");
+    }
+    status.textContent = passed ? "All checks passed" : "Not yet";
+    status.className = "status " + (passed ? "ok" : "bad");
+    return passed;
+  }
+
+  function el(tag, cls, text) {
+    var node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  function showReport(key, rows, passed) {
+    var box = el("div", "report");
+    box.appendChild(el("h4", passed ? "win" : "lose", passed ? "Try it " + key + " is done. Well done!" : "Not yet. Look at the ✗ below, change your code, and check again."));
+    var list = el("ul");
+    rows.forEach(function (row) {
+      if (!row.fails.length) { list.appendChild(el("li", "ok", row.label)); return; }
+      row.fails.forEach(function (f) {
+        var li = el("li", "bad");
+        var body = el("div");
+        body.appendChild(document.createTextNode(f.text));
+        if (f.pre) body.appendChild(el("pre", "err", f.pre));
+        if (f.expected !== undefined) { body.appendChild(el("small", "", "Expected output:")); body.appendChild(el("pre", "", f.expected || "(nothing)")); }
+        if (f.got !== undefined) { body.appendChild(el("small", "", "Your output:")); body.appendChild(el("pre", "", f.got || "(nothing)")); }
+        if (f.small) body.appendChild(el("small", "", f.small));
+        li.appendChild(body);
+        list.appendChild(li);
+      });
+    });
+    box.appendChild(list);
+    var row = el("div", "row");
+    if (passed) {
+      var next = nextTask(key);
+      if (next) {
+        var go = el("button", "primary", next.lesson === lessonOf[key] ? "Next: Try it " + next.key + " →" : "Next lesson →");
+        go.type = "button";
+        go.addEventListener("click", function () {
+          if (next.lesson !== currentSlug) location.hash = next.lesson;
+          setTimeout(function () { focusTask(next.key); }, 30);
+        });
+        row.appendChild(go);
+      }
+      var see = el("button", "ghost", "Compare with the course's answer");
+      see.type = "button";
+      see.addEventListener("click", function () { showAnswer(key, true); });
+      row.appendChild(see);
+    } else {
+      var hint = el("button", "ghost", "Stuck? Show the answer");
+      hint.type = "button";
+      hint.addEventListener("click", function () { showAnswer(key, true); });
+      row.appendChild(hint);
+    }
+    box.appendChild(row);
+    output.appendChild(box);
+  }
+
+  // ------------------------------------------------------------------ exercises in the workspace
+  var ORDER = Object.keys(L.tasks).sort(function (a, b) {
+    var x = a.split(".").map(Number), y = b.split(".").map(Number);
+    return x[0] - y[0] || x[1] - y[1];
+  });
+  var lessonOf = {}, lessonTasks = {};
+  L.lessons.forEach(function (lesson) {
+    lessonTasks[lesson.slug] = [];
+    lesson.html.replace(/data-task="([\d.]+)"/g, function (all, key) { lessonOf[key] = lesson.slug; lessonTasks[lesson.slug].push(key); return all; });
+  });
+  function nextTask(key) {
+    var i = ORDER.indexOf(key);
+    for (var j = i + 1; j < ORDER.length; j++) if (!state.done[ORDER[j]]) return { key: ORDER[j], lesson: lessonOf[ORDER[j]] };
+    return null;
+  }
+
+  function startTask(key) {
+    var task = L.tasks[key];
+    var file = taskFile(task);
+    var code = typeof state.attempts[key] === "string" ? state.attempts[key] : task.starter;
+    replaceFile(file, code, "Try it " + key);
+    state.task = key;
+    var firstInputs = task.cases && task.cases[0] && task.cases[0].inputs;
+    answers.value = firstInputs ? firstInputs.join("\n") : "";
+    answersBox.open = !!firstInputs;
+    openFile(file);
+    showTaskbar();
+    output.textContent = "";
+    stopLast();
+    status.textContent = "";
+    addLine("Write your code for Try it " + key + ", click ▶ Run to try it, then click Check my code.", "note");
+    if (firstInputs) addLine("The box under the output has answers for jiggesh(). Change them to test other numbers.", "note");
+    showView("code");
+    var end = source.value.length;
+    source.focus({ preventScroll: true });
+    source.setSelectionRange(end, end);
+    save();
+  }
+  function showTaskbar() {
+    var key = state.task;
+    if (!key || !L.tasks[key]) { taskbar.hidden = true; return; }
+    taskbar.hidden = false;
+    taskbar.classList.toggle("done", !!state.done[key]);
+    $("tb-text").innerHTML = "<b>Try it " + esc(key) + (state.done[key] ? " ✓" : "") + "</b>" + L.tasks[key].prompt;
+  }
+  $("check").addEventListener("click", function () { if (state.task) check(state.task); });
+  $("task-close").addEventListener("click", function () { state.task = null; showTaskbar(); save(); });
+  taskbar.addEventListener("animationend", function () { taskbar.classList.remove("flash"); });
+
+  function loadAnswer(key) {
+    var task = L.tasks[key];
+    var code = task.answer.full || task.answer.code;
+    var file = taskFile(task);
+    replaceFile(file, code, "the answer to Try it " + key);
+    state.task = key;
+    state.attempts[key] = code;
+    var firstInputs = task.cases && task.cases[0] && task.cases[0].inputs;
+    answers.value = firstInputs ? firstInputs.join("\n") : "";
+    openFile(file);
+    showTaskbar();
+    showView("code");
+    runCurrent();
+    save();
+  }
+
+  // ------------------------------------------------------------------ the lesson pages
+  var currentSlug = null;
+  function showPage(slug, keepScroll) {
+    var index = 0;
+    L.lessons.forEach(function (l, i) { if (l.slug === slug) index = i; });
+    var lesson = L.lessons[index];
+    currentSlug = lesson.slug;
+    var eyebrow = lesson.number ? "Lesson " + lesson.number + " of 15" : lesson.slug === "start" ? "The Banglish programming language" : "Learn BE";
+    var html = '<p class="eyebrow">' + esc(eyebrow) + "</p><h1>" + esc(lesson.title) + "</h1>";
+    if (lesson.slug === "start") {
+      html += '<div class="how"><b>How this page works</b>' +
+        "<p><strong>Read on one side, code on the other.</strong> <strong>▶ Try it</strong> puts an example in the editor and runs it, so you can change it and run it again.</p>" +
+        "<p><strong>Each lesson ends with Try it exercises.</strong> Click <strong>Start</strong>, write your code, then <strong>Check my code</strong>: BE runs it and tells you what is right and what to fix.</p>" +
+        "<p><strong>Everything stays in this browser:</strong> your code, the files your programs save, and which exercises you finished.</p></div>";
+    }
+    pageEl.innerHTML = html + lesson.html;
+    hydrate();
+    // pager
+    var pager = $("pager");
+    pager.textContent = "";
+    var prev = L.lessons[index - 1], next = L.lessons[index + 1];
+    if (prev) pager.appendChild(pagerLink(prev, "prev", "← Back"));
+    if (next) pager.appendChild(pagerLink(next, "next", "Next →"));
+    // lesson list and labels
+    document.querySelectorAll("#toc-list a").forEach(function (a) {
+      if (a.dataset.slug === currentSlug) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    $("toc-label").textContent = (lesson.number ? lesson.number + " · " : "") + lesson.title;
+    document.title = (lesson.number ? "Lesson " + lesson.number + ": " + lesson.title : lesson.title) + " · Learn BE";
+    state.page = currentSlug;
+    save();
+    if (!keepScroll) { lessonEl.scrollTop = 0; if (isPhone()) window.scrollTo(0, 0); }
+  }
+  function pagerLink(lesson, cls, word) {
+    var a = el("a", cls);
+    a.href = "#" + lesson.slug;
+    a.appendChild(el("small", "", word));
+    a.appendChild(el("span", "", (lesson.number ? lesson.number + ". " : "") + lesson.title));
+    return a;
+  }
+
+  function hydrate() {
+    pageEl.querySelectorAll(".example").forEach(function (box) {
+      var ex = L.codes[Number(box.dataset.code)];
+      var name = ex.kind === "html" ? "page.html" : ex.file || "BE";
+      if (ex.kind === "error") {
+        box.classList.add("error-example");
+        box.innerHTML = '<div class="ex-head"><span class="ex-label">What BE shows</span></div><pre class="ex-code code">' + esc(ex.code) + "</pre>";
+        return;
+      }
+      box.innerHTML = '<div class="ex-head"><span class="ex-label' + (name === "BE" ? "" : " file") + '">' + esc(name) + '</span><button type="button" class="primary try">▶ Try it</button></div>' +
+        '<pre class="ex-code code">' + (ex.kind === "html" ? paintHtml(ex.code) : paintCode(ex.code)) + "</pre>" +
+        (ex.output !== undefined ? '<div class="ex-out"><span class="ex-label">Output</span><pre class="code">' + esc(ex.output) + "</pre></div>" : "");
+      box.querySelector(".try").addEventListener("click", function () { tryExample(Number(box.dataset.code)); });
+    });
+    pageEl.querySelectorAll(".task").forEach(function (box) {
+      var key = box.dataset.task;
+      box.id = "task-" + key.replace(".", "-");
+      renderTaskCard(box, key);
+    });
+  }
+  function renderTaskCard(box, key) {
+    var task = L.tasks[key];
+    var done = !!state.done[key];
+    box.classList.toggle("done", done);
+    var started = typeof state.attempts[key] === "string";
+    box.innerHTML = '<div class="task-head"><span class="task-title">Try it ' + esc(key) + '</span><span class="pill">' + (done ? "Done ✓" : started ? "Started" : "To do") + "</span></div>" +
+      '<p class="prompt">' + task.prompt + "</p>" +
+      '<div class="task-actions"><button type="button" class="primary start">' + (done ? "Open my code" : started ? "Continue" : "Start") + '</button>' +
+      '<button type="button" class="ghost reveal" aria-expanded="false">Show answer</button></div>' +
+      '<div class="solution" hidden></div>';
+    box.querySelector(".start").addEventListener("click", function () { startTask(key); });
+    box.querySelector(".reveal").addEventListener("click", function () { showAnswer(key, box.querySelector(".solution").hidden); });
+    if (state.shown[key]) showAnswer(key, true, true);
+  }
+  function showAnswer(key, open, quiet) {
+    var box = document.getElementById("task-" + key.replace(".", "-"));
+    if (!box) {
+      location.hash = lessonOf[key];
+      setTimeout(function () { showAnswer(key, open); }, 30);
+      return;
+    }
+    var sol = box.querySelector(".solution"), button = box.querySelector(".reveal");
+    var task = L.tasks[key];
+    if (open) {
+      var a = task.answer;
+      sol.innerHTML = (a.before ? "<p>" + a.before + "</p>" : "<p>One way to do it:</p>") +
+        (a.code ? '<pre class="code">' + (task.page && a.full ? paintHtml(a.code) : paintCode(a.code)) + "</pre>" : "") +
+        (a.note ? "<p>" + a.note + "</p>" : "") +
+        ((a.full || a.code) ? '<button type="button" class="load">Put this answer in the editor</button>' : "");
+      var load = sol.querySelector(".load");
+      if (load) load.addEventListener("click", function () { loadAnswer(key); });
+      sol.hidden = false;
+      button.textContent = "Hide answer";
+      button.setAttribute("aria-expanded", "true");
+      state.shown[key] = true;
+      if (!quiet) box.scrollIntoView({ block: "nearest", behavior: smoothScroll() });
+      if (!quiet && isPhone()) showView("lesson", box);
+    } else {
+      sol.hidden = true;
+      button.textContent = "Show answer";
+      button.setAttribute("aria-expanded", "false");
+      delete state.shown[key];
+    }
+    save();
+  }
+  function focusTask(key) {
+    var box = document.getElementById("task-" + key.replace(".", "-"));
+    if (!box) return;
+    showView("lesson", box);
+    box.classList.add("flash");
+    box.addEventListener("animationend", function () { box.classList.remove("flash"); }, { once: true });
+  }
+
+  function tryExample(i) {
+    var ex = L.codes[i];
+    var file = ex.kind === "html" ? "page.html" : ex.file || "main.be";
+    replaceFile(file, ex.code, "the example");
+    state.task = null;
+    showTaskbar();
+    var typed = ex.answers || (/elomelo\(1, 50\)/.test(ex.code) ? GUESSES : []);
+    answers.value = typed.join("\n");
+    answersBox.open = typed.length > 0;
+    openFile(file);
+    showView("code");
+    if (file === "main.be" || ex.kind === "html" || /\b(dekhao|chalao)\b/.test(ex.code)) runCurrent();
+    else {
+      stopLast();
+      output.textContent = "";
+      status.textContent = "";
+      addLine("(" + file + " is saved in this page's folder. Another file can use it with anao \"" + file + "\".)", "note");
+    }
+    save();
+  }
+
+  // ------------------------------------------------------------------ lesson list and progress
+  function buildToc() {
+    var list = $("toc-list");
+    list.textContent = "";
+    L.lessons.forEach(function (lesson) {
+      if (lesson.slug === "projects") list.appendChild(el("li", "group", "Putting it together"));
+      var li = el("li");
+      var a = el("a");
+      a.href = "#" + lesson.slug;
+      a.dataset.slug = lesson.slug;
+      var icon = { start: "★", projects: "◆", reference: "≡", teachers: "✎" }[lesson.slug];
+      a.appendChild(el("span", "num", lesson.number ? String(lesson.number) : icon || "•"));
+      a.appendChild(el("span", "", lesson.title));
+      a.appendChild(el("span", "count", ""));
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+  }
+  function updateProgress() {
+    var total = ORDER.length;
+    var done = ORDER.filter(function (k) { return state.done[k]; }).length;
+    var pct = Math.round((done / total) * 100) + "%";
+    $("meter").style.width = pct;
+    $("toc-meter").style.width = pct;
+    $("progress-text").textContent = done + " of " + total + " done";
+    $("toc-progress-text").textContent = done + " of " + total + " exercises done";
+    document.querySelectorAll("#toc-list a").forEach(function (a) {
+      var keys = lessonTasks[a.dataset.slug] || [];
+      var n = keys.filter(function (k) { return state.done[k]; }).length;
+      a.querySelector(".count").textContent = keys.length ? (n === keys.length ? "✓" : n + "/" + keys.length) : "";
+      a.classList.toggle("all-done", keys.length > 0 && n === keys.length);
+    });
+    pageEl.querySelectorAll(".task").forEach(function (box) {
+      var open = !box.querySelector(".solution").hidden;
+      renderTaskCard(box, box.dataset.task);
+      if (open) showAnswer(box.dataset.task, true, true);
+    });
+    showTaskbar();
+  }
+
+  // ------------------------------------------------------------------ views (phones show one side at a time)
+  function isPhone() { return window.matchMedia("(max-width: 899px)").matches; }
+  function smoothScroll() { return window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"; }
+  var lessonScroll = 0;
+  function showView(view, target) {
+    if (!isPhone()) {
+      if (target) target.scrollIntoView({ block: "center", behavior: smoothScroll() });
+      return;
+    }
+    if (document.body.dataset.view === view) {
+      if (target) target.scrollIntoView({ block: "center" });
+      return;
+    }
+    if (document.body.dataset.view === "lesson") lessonScroll = window.scrollY;
+    document.body.dataset.view = view;
+    document.querySelectorAll(".switch button").forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.view === view ? "true" : "false"); });
+    if (view === "code") { window.scrollTo(0, 0); refresh(false); }
+    else if (target) target.scrollIntoView({ block: "center" });
+    else window.scrollTo(0, lessonScroll);
+  }
+  document.querySelectorAll(".switch button").forEach(function (b) {
+    b.addEventListener("click", function () { showView(b.dataset.view); });
+  });
+
+  function setToc(open) {
+    document.body.classList.toggle("toc-open", open);
+    $("toc-btn").setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  $("toc-btn").addEventListener("click", function () { setToc(!document.body.classList.contains("toc-open")); });
+  $("scrim").addEventListener("click", function () { setToc(false); });
+  $("toc-list").addEventListener("click", function (e) {
+    if (e.target.closest("a")) { setToc(false); showView("lesson"); }
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") setToc(false); });
+
+  var resetArmed = null;
+  $("reset").addEventListener("click", function () {
+    var button = this;
+    if (!resetArmed) {
+      button.textContent = "Click again to erase everything";
+      resetArmed = setTimeout(function () { resetArmed = null; button.textContent = "Start over"; }, 4000);
+      return;
+    }
+    clearTimeout(resetArmed);
+    resetArmed = null;
+    button.textContent = "Start over";
+    state = { done: {}, attempts: {}, files: { "main.be": WELCOME }, open: "main.be", task: null, page: "start", shown: {} };
+    fresh = {};
+    save();
+    answers.value = "";
+    openFile("main.be");
+    showTaskbar();
+    updateProgress();
+    location.hash = "start";
+    showPage("start");
+    runCurrent();
+    setToc(false);
+  });
+
+  // ------------------------------------------------------------------ new files
+  $("new-file").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = $("new-name").value.trim().replace(/\\/g, "/");
+    if (!/\.[A-Za-z0-9]+$/.test(name)) name += ".be";
+    if (!/^[\w-]+(\/[\w-]+)*\.[A-Za-z0-9]+$/.test(name)) {
+      $("new-help").textContent = "Use letters, numbers, _ and -, and an ending like .be or .txt (for example hishab.be).";
+      return;
+    }
+    if (has(state.files, name)) { openFile(name); $("new-file").hidden = true; return; }
+    state.files[name] = /\.be$/.test(name) ? "# " + name + "\n" : "";
+    $("new-file").hidden = true;
+    openFile(name);
+    source.focus();
+  });
+  $("new-cancel").addEventListener("click", function () { $("new-file").hidden = true; });
+
+  // ------------------------------------------------------------------ editor keys
+  $("run").addEventListener("click", function () { runCurrent(); });
+  source.addEventListener("input", function () { refresh(true); });
+  source.addEventListener("keydown", function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); if (e.shiftKey && state.task) check(state.task); else runCurrent(); return; }
+    if (e.key === "Tab" && !e.shiftKey) {
+      e.preventDefault();
+      var s = source.selectionStart, t = source.selectionEnd;
+      source.value = source.value.slice(0, s) + "    " + source.value.slice(t);
+      source.selectionStart = source.selectionEnd = s + 4;
+      refresh(true);
+    }
+  });
+  window.addEventListener("resize", function () { refresh(false); });
+
+  // ------------------------------------------------------------------ start
+  function slugFromHash() {
+    var slug = decodeURIComponent(location.hash.replace(/^#/, ""));
+    return L.lessons.some(function (l) { return l.slug === slug; }) ? slug : null;
+  }
+  window.addEventListener("hashchange", function () {
+    var slug = slugFromHash();
+    setToc(false);
+    if (slug && slug !== currentSlug) { showPage(slug); showView("lesson"); }
+  });
+  buildToc();
+  showPage(slugFromHash() || state.page || "start");
+  updateProgress();
+  openFile(state.open);
+  showTaskbar();
+  if (firstVisit) runCurrent();
+  else addLine("(Welcome back. Click ▶ Run to run " + runnable(state.open) + ".)", "note");
+
+  // For tests and for teachers' tools: the same actions as the buttons
+  window.beLearn = { tryExample: tryExample, startTask: startTask, check: check, loadAnswer: loadAnswer, showPage: showPage, state: function () { return state; } };
+})();
+</script>
+</body>
+</html>
